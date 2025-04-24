@@ -6,10 +6,10 @@ This project is an implementation of a Retrieval-Augmented Generation (RAG) base
 
 ## 🔧 Modifications & Setup
 
-- Several changes were made in the `main.py` API file to support real-time data access and processing.
+- Soome change was made in the `api.py` API file to support real-time data access and processing.
 - **Ngrok** is used to expose the dataset, enabling remote access through a public URL.
 - To address hallucination issues caused by a large dataset (~54,000 documents), a **custom search and retrieval** technique was developed.
-- The retriever fetches top-k relevant documents by first filtering through metadata using either **regex** or **LLM-based query interpretation**.
+- The retriever fetches top-k relevant documents by first filtering through metadata using either **regex** or **LLM-based query interpretation** and then adding in the filter dictionary in retriever.
 
 ---
 
