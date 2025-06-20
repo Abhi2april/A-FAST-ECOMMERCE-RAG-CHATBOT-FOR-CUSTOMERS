@@ -4,7 +4,6 @@ einops
 langchain
 langchain-community
 langchain-text-splitters
-langchain-groq
 bitsandbytes>=0.40.0
 sentence-transformers
 chromadb
@@ -16,3 +15,8 @@ requests
 streamlit
 langchain-huggingface
 torch>=2.0.0
+huggingface_hub[hf_xet]
+annoy
+langchain-groq
+langchain-chroma
+langgraph
