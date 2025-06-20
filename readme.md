@@ -16,3 +16,7 @@ Soome change was made in the `api.py` API file to support real-time data access 
 4. In `data_loader.py`, modify the data loading section:
    - **Comment out** the `pd.read_csv(...)` line.
    - **Uncomment** the `GetResponse` lines to fetch data from the hosted ngrok link.
+
+
+
+FOR TESTING THE RAG YOU CAN JUST MANUALLY ADD YOUR BOTH ORDER AND PRODUCT'S DATASET'S CSV FILE PATH IN THE data_loader.py file inside the load_data() function
