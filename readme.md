@@ -18,7 +18,7 @@ Soome change was made in the `api.py` API file to support real-time data access 
    - **Uncomment** the `GetResponse` lines to fetch data from the hosted ngrok link.
 
 
-GENERATE YOU GROQ'S API KEYS FROM-> https://console.groq.com/keys
+GENERATE YOU GROQ'S API KEYS FROM-> https://console.groq.com/keys AND SET THEM IN YOUR .env
 
 FOR TESTING PURPOSES OF THE RAG YOU CAN JUST MANUALLY ADD YOUR BOTH ORDER AND PRODUCT'S DATASET'S CSV FILE PATH IN THE data_loader.py file inside the load_data() function.
 FOR THIS YOU CAN- 
