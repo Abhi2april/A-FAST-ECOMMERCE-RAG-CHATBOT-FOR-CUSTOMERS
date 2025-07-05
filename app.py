@@ -81,17 +81,17 @@ if query:
             st.warning("Generated SQL query appears to be invalid or unsafe. Please try a different query.")
             st.stop()
 
-        # Create a new connection for this query to avoid threading issues
+        # a new connection for this query to avoid threading issues
         conn = sqlite3.connect('ecommerce.db')
         result_df = execute_sql_query(conn, sql_query)
         conn.close()
 
         used_vectorstore = False
         if result_df.empty:
-            # Use vectorstore to retrieve relevant documents
+            # vectorstore to retrieve relevant documents
             retriever = st.session_state.vectordb.as_retriever(
                 search_kwargs={
-                    "k": 5
+                    "k": 10
                     }
                 )
             try:
@@ -108,11 +108,10 @@ if query:
             ])
             used_vectorstore = True
         else:
-            # Format results for LLM context
+     # format results for LLM context
             formatted_results = format_sql_results(result_df, query)
-        # --- End fallback logic ---
+        # --- should end fallback logic ---
         
-        # Create prompt for LLM with results
         if used_vectorstore:
             prompt = f"""
             Original Query: {query}
