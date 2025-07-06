@@ -99,7 +99,13 @@ if query:
             st.stop()
 
         # a new connection for this query to avoid threading issues
-        conn = sqlite3.connect('ecommerce.db')
+        conn = sqlite3.connect(':memory:')
+        
+        # Load data into the in-memory database
+        order_df, product_df = load_data()
+        order_df.to_sql('orders', conn, if_exists='replace', index=False)
+        product_df.to_sql('products', conn, if_exists='replace', index=False)
+        
         result_df = execute_sql_query(conn, sql_query)
         conn.close()
 
