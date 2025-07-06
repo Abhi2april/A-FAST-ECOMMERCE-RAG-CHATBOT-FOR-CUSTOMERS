@@ -2,7 +2,9 @@ import streamlit as st
 import os
 import sqlite3
 from dotenv import load_dotenv
-from main import create_documents, build_vectorstore, setup_database, execute_sql_query, format_sql_results
+from main import setup_database, execute_sql_query, format_sql_results
+from vectorstore_builder import build_vectorstore
+from doc_processor import create_documents
 from model_config import setup_workflow, setup_model
 from data_loader import load_data
 from query_analyzer import QueryAnalyzer
