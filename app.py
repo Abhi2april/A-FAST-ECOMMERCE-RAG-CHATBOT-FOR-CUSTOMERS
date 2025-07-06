@@ -15,12 +15,6 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 #load_dotenv()
 #api_key=st.secrets.get("GROQ_API_KEY")
 
-#os.environ["GROQ_API_KEY"]=api_key
-load_data = st.cache_data(load_data)
-create_documents = st.cache_data(create_documents)
-#build_vectorstore = st.cache_resource(build_vectorstore)
-setup_model = st.cache_resource(setup_model)
-setup_workflow = st.cache_resource(setup_workflow)
 
 st.set_page_config(
     page_title="E-Commerce Chatbot",
