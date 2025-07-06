@@ -1,8 +1,11 @@
 import os
 import requests
 import getpass
-if not os.environ.get("GROQ_API_KEY"):
-  os.environ["GROQ_API_KEY"] = getpass.getpass("Enter API key for groq: ")
+#if not os.environ.get("GROQ_API_KEY"):
+#  os.environ["GROQ_API_KEY"] = getpass.getpass("Enter API key for groq: ")
+
+#if not os.environ.get("OPENAI_API_KEY"):
+#  os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter API key for OpenAI: ")
 
 # URLs
 # NGROK_URL = "https://7ed5-103-47-74-66.ngrok-free.app"
