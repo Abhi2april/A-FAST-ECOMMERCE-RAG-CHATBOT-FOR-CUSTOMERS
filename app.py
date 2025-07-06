@@ -16,13 +16,11 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 #api_key=st.secrets.get("GROQ_API_KEY")
 
 #os.environ["GROQ_API_KEY"]=api_key
-
 load_data = st.cache_data(load_data)
 create_documents = st.cache_data(create_documents)
-build_vectorstore = st.cache_resource(build_vectorstore)
+#build_vectorstore = st.cache_resource(build_vectorstore)
 setup_model = st.cache_resource(setup_model)
 setup_workflow = st.cache_resource(setup_workflow)
-
 
 st.set_page_config(
     page_title="E-Commerce Chatbot",
@@ -72,7 +70,7 @@ with st.sidebar:
     if st.button("Initialize System"):
         initialize_system()
 
-#main content
+# Main content
 st.title("E-Commerce Interface")
 
 if not st.session_state.initialized:
