@@ -13,4 +13,5 @@ from time import time
 from langchain_core.messages import HumanMessage
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+import pandas as pd
 import sqlite3
