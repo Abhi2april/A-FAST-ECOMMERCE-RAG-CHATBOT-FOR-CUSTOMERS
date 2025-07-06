@@ -2,9 +2,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import InMemoryVectorStore
 from config import EMBEDDING_MODEL_NAME
-from config import CHROMA_PERSIST_DIR
 import torch
-from langchain_chroma import Chroma
 from tqdm import tqdm
 import logging
 
@@ -41,20 +39,13 @@ def build_vectorstore(docs):
         model_kwargs={"device": "cuda" if torch.cuda.is_available() else "cpu"}
     )
 
-    logger.info("Creating vector store...")
-    batch_size = 32  
-    all_embeddings = []
+    logger.info("Creating in-memory vector store...")
     
-    for i in tqdm(range(0, len(split_docs), batch_size), desc="Computing embeddings"):
-        batch = split_docs[i:i + batch_size]
-        batch_embeddings = embedding_model.embed_documents([doc.page_content for doc in batch])
-        all_embeddings.extend(batch_embeddings)
-    
-    logger.info("Building Vector DB")
-    vectordb = Chroma.from_documents(
+    # Use InMemoryVectorStore instead of Chroma
+    vectordb = InMemoryVectorStore.from_documents(
         documents=split_docs,
-        embedding=embedding_model,
-        persist_directory=CHROMA_PERSIST_DIR
+        embedding=embedding_model
     )
+    
     logger.info(f"Vector store created with {len(split_docs)} documents")
     return vectordb
