@@ -6,8 +6,8 @@ langchain-community
 langchain-text-splitters
 bitsandbytes>=0.40.0
 sentence-transformers
-chromadb==0.4.22
 nltk
+chromadb==0.4.22
 requests
 scikit-learn
 pandas
@@ -18,5 +18,5 @@ torch>=2.0.0
 huggingface_hub[hf_xet]
 annoy
 langchain-groq
-langchain-chroma
 langgraph
+numpy==1.24.3
