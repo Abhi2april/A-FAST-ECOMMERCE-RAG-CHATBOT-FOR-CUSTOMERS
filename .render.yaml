@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: streamlit-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port=10000 --server.enableCORS=false
+    plan: free
+
+build:
+  pythonVersion: 3.10
