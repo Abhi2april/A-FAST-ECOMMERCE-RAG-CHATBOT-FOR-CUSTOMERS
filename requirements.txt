@@ -18,3 +18,4 @@ setuptools
 setuptools>=42
 wheel
 build
+langchain_huggingface
