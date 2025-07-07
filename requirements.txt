@@ -21,3 +21,4 @@ langchain-groq
 langgraph
 numpy==1.24.3
 langchain_chroma
+setuptools
