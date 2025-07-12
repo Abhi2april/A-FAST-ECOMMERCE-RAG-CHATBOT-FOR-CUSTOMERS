@@ -16,6 +16,4 @@ numpy==1.24.3
 langchain_chroma
 setuptools
 setuptools>=42
-wheel
-build
 langchain_huggingface
