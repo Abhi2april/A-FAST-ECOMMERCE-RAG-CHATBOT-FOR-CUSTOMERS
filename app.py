@@ -11,24 +11,26 @@ from query_analyzer import QueryAnalyzer
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-
+# Global singleton for vectordb
+VECTORDATABASE = None
+ 
+ 
 #load_dotenv()
 #api_key=st.secrets.get("GROQ_API_KEY")
-
-
+ 
+ 
 st.set_page_config(
     page_title="E-Commerce Chatbot",
 )
-
+ 
 if 'groq_api_key' not in st.session_state:
     st.session_state.groq_api_key = ""
-
+ 
 st.session_state.groq_api_key = st.text_input(
     label="your GROQ API Key",
     type="password",
     value=st.session_state.groq_api_key,
 )
-
 
 
 if 'initialized' not in st.session_state:
@@ -41,6 +43,7 @@ if 'initialized' not in st.session_state:
 
 
 def initialize_system():
+    global VECTORDATABASE
     with st.spinner("Initializing the system..."):
 
         os.environ["GROQ_API_KEY"] = st.session_state.groq_api_key
@@ -49,9 +52,11 @@ def initialize_system():
         st.session_state.query_analyzer = QueryAnalyzer(llm=st.session_state.llm)
         st.session_state.app = setup_workflow()
 
-        order_df, product_df = load_data()
-        docs = create_documents((order_df, product_df))
-        st.session_state.vectordb = build_vectorstore(docs)
+        if VECTORDATABASE is None:
+            order_df, product_df = load_data()
+            docs = create_documents((order_df, product_df))
+            VECTORDATABASE = build_vectorstore(docs)
+        st.session_state.vectordb = VECTORDATABASE
 
         st.session_state.initialized = True
 
