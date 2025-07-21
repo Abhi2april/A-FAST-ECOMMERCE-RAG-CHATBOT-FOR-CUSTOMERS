@@ -11,79 +11,43 @@ from query_analyzer import QueryAnalyzer
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-# Global singleton for vectordb
-VECTORDATABASE = None
- 
- 
 load_dotenv()
-#api_key=st.secrets.get("GROQ_API_KEY")
- 
- 
+
 st.set_page_config(
     page_title="E-Commerce Chatbot",
 )
- 
-#if 'groq_api_key' not in st.session_state:
-#    st.session_state.groq_api_key = ""
- 
-#st.session_state.groq_api_key = st.text_input(
-#    label="your GROQ API Key",
-#    type="password",
-#    value=st.session_state.groq_api_key,
-#)
 
-
-if 'initialized' not in st.session_state:
-    st.session_state.initialized = False
-    st.session_state.vectordb = None
-    st.session_state.llm = None
-    st.session_state.query_analyzer = None
-    st.session_state.app = None
-
-
-
-def initialize_system():
-    global VECTORDATABASE
-    with st.spinner("Initializing the system..."):
-
-#        os.environ["GROQ_API_KEY"] = st.session_state.groq_api_key
-
-        st.session_state.llm = setup_model()
-        st.session_state.query_analyzer = QueryAnalyzer(llm=st.session_state.llm)
-        st.session_state.app = setup_workflow()
-
-        if VECTORDATABASE is None:
-            order_df, product_df = load_data()
-            docs = create_documents((order_df, product_df))
-            VECTORDATABASE = build_vectorstore(docs)
-        st.session_state.vectordb = VECTORDATABASE
-
-        st.session_state.initialized = True
-
-
-
-
-with st.sidebar:
-    st.title("RAG System")
+# Load everything immediately when script runs
+@st.cache_resource
+def load_system_components():
+    # Setup all components
+    llm = setup_model()
+    query_analyzer = QueryAnalyzer(llm=llm)
+    app = setup_workflow()
     
-    if st.button("Initialize System"):
-        initialize_system()
+    # Build vectorstore
+    order_df, product_df = load_data()
+    docs = create_documents((order_df, product_df))
+    vectordb = build_vectorstore(docs)
+    
+    return llm, query_analyzer, app, vectordb
 
-# Main content
-st.title("E-Commerce Interface")
+# Load all components immediately
+llm, query_analyzer, app, vectordb = load_system_components()
 
-if not st.session_state.initialized:
-    st.info("click 'Initialize System' in the sidebar to start.")
-    st.stop()
-
+# Simple thread counter for conversations
 if 'thread_counter' not in st.session_state:
     st.session_state.thread_counter = 1
+
+# Main interface
+st.title("E-Commerce Interface")
 
 query = st.text_input(
     "Enter your query:",
     placeholder="What would you like to know?",
     key="query_input"
 )
+
 config = {"configurable": {"thread_id": str(st.session_state.thread_counter)}}
 
 if query:
@@ -94,17 +58,17 @@ if query:
             st.warning("Started new conversation thread!")
             st.stop()
 
-        sql_result = st.session_state.query_analyzer.generate_sql_query(query)
+        sql_result = query_analyzer.generate_sql_query(query)
         if not sql_result or 'sql_query' not in sql_result:
             st.warning("Could not generate SQL query from your request. Please try rephrasing.")
             st.stop()
         sql_query = sql_result['sql_query']
 
-        if not st.session_state.query_analyzer.validate_sql(sql_query):
+        if not query_analyzer.validate_sql(sql_query):
             st.warning("Generated SQL query appears to be invalid or unsafe. Please try a different query.")
             st.stop()
 
-        # a new connection for this query to avoid threading issues
+        # Create new connection for this query
         conn = sqlite3.connect(':memory:')
         
         # Load data into the in-memory database
@@ -117,12 +81,8 @@ if query:
 
         used_vectorstore = False
         if result_df.empty:
-            # vectorstore to retrieve relevant documents
-            retriever = st.session_state.vectordb.as_retriever(
-                search_kwargs={
-                    "k": 10
-                    }
-                )
+            # Use vectorstore to retrieve relevant documents
+            retriever = vectordb.as_retriever(search_kwargs={"k": 10})
             try:
                 relevant_docs = retriever.invoke(query)
             except Exception as e:
@@ -137,9 +97,7 @@ if query:
             ])
             used_vectorstore = True
         else:
-     # format results for LLM context
             formatted_results = format_sql_results(result_df, query)
-        # --- should end fallback logic ---
         
         if used_vectorstore:
             prompt = f"""
@@ -174,7 +132,7 @@ if query:
             Instructions: 
             1. Analyze the query results carefully
             2. Answer the original query using the data from the SQL results only if customer provided necessary details.
-            3. If the data doesn't fully answer the question, explain what information is available.
+            3. If the documents don't fully answer the question, explain what information is available.
             4. Be specific and include relevant details from the results.
             5. Format your response as a helpful ecommerce assistant would.
             6. If there are multiple results, summarize key insights.
@@ -185,7 +143,7 @@ if query:
             """
         
         input_messages = [HumanMessage(content=prompt)]
-        result = st.session_state.app.invoke({"messages": input_messages}, config)
+        result = app.invoke({"messages": input_messages}, config)
         
         response_content = result["messages"][-1].content
-        st.success(f"Result: {response_content}") 
+        st.success(f"Result: {response_content}")
