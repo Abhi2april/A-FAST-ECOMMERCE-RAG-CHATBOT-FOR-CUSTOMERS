@@ -29,10 +29,10 @@ def load_system_components():
     order_df, product_df = load_data()
     docs = create_documents((order_df, product_df))
     vectordb = build_vectorstore(docs)
-    
+
     return llm, query_analyzer, app, vectordb
 
-# Load all components immediately
+# load all components immediately
 llm, query_analyzer, app, vectordb = load_system_components()
 
 # Simple thread counter for conversations
@@ -68,10 +68,10 @@ if query:
             st.warning("Generated SQL query appears to be invalid or unsafe. Please try a different query.")
             st.stop()
 
-        # Create new connection for this query
+        # new connection for this query
         conn = sqlite3.connect(':memory:')
         
-        # Load data into the in-memory database
+        # load data into the in-memory database
         order_df, product_df = load_data()
         order_df.to_sql('orders', conn, if_exists='replace', index=False)
         product_df.to_sql('products', conn, if_exists='replace', index=False)
@@ -81,8 +81,8 @@ if query:
 
         used_vectorstore = False
         if result_df.empty:
-            # Use vectorstore to retrieve relevant documents
-            retriever = vectordb.as_retriever(search_kwargs={"k": 10})
+            # use vectorstore to retrieve relevant documents
+            retriever = vectordb.as_retriever(search_kwargs={"k": 5})
             try:
                 relevant_docs = retriever.invoke(query)
             except Exception as e:
