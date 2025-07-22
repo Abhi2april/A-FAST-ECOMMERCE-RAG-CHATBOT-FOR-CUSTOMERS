@@ -1,6 +1,7 @@
 from langchain.chat_models import init_chat_model
 from time import time
 import os
+import getpass
 from langchain_groq import ChatGroq
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import START, MessagesState, StateGraph
@@ -10,8 +11,12 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 def setup_model():
 #    llm = init_chat_model("meta-llama/llama-4-scout-17b-16e-instruct", model_provider="groq")
-    llm = ChatGroq(model_name="compound-beta-mini")
+#    llm = ChatGroq(model_name="compound-beta")
+    llm = init_chat_model("gemini-2.0-flash", model_provider="google_genai")
     return llm
+
+
+
 
 
 
