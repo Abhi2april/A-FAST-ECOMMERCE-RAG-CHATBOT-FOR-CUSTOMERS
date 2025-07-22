@@ -48,7 +48,7 @@ query = st.text_input(
     key="query_input"
 )
 
-MAX_DOC_CHARS = 1000
+MAX_DOC_CHARS = 500
 config = {"configurable": {"thread_id": str(st.session_state.thread_counter)}}
 
 if query:
