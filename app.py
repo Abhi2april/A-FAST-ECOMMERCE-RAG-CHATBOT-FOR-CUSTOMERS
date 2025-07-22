@@ -48,6 +48,7 @@ query = st.text_input(
     key="query_input"
 )
 
+MAX_DOC_CHARS = 1000
 config = {"configurable": {"thread_id": str(st.session_state.thread_counter)}}
 
 if query:
@@ -92,7 +93,7 @@ if query:
                 st.warning("No results found for your query in SQL or vectorstore. Try rephrasing or using different keywords.")
                 
             formatted_results = "\n".join([
-                f"Document {i+1}:\n{doc.page_content}\nMetadata: {doc.metadata}"
+                f"Document {i+1}:\n{doc.page_content[:MAX_DOC_CHARS]}\nMetadata: {doc.metadata}"
                 for i, doc in enumerate(relevant_docs)
             ])
             used_vectorstore = True
