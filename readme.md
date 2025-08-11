@@ -1,4 +1,4 @@
-Soome change was made in the `api.py` API file to support real-time data access and processing.
+Some change was made in the `api.py` API file to support real-time data access and processing.
 - **Ngrok** is used to expose the dataset, enabling remote access through a public URL.
 
 1. Start the FastAPI server:
